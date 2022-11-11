@@ -46,6 +46,8 @@ async function run() {
     );
 
     // More code will be added below
+    const model = createModel();
+    tfvis.show.modelSummary({name: 'Model Summary'}, model);
 }
 
 document.addEventListener('DOMContentLoaded', run);
