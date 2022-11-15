@@ -79,7 +79,7 @@ async function trainModel(model, inputs, labels) {
     });
 
     const batchSize = 32;
-    const epochs = 100; // 500번 돌리라 했는데...내노트북아 ㅠ
+    const epochs = 100; //  500번 돌리라 했는데...내노트북아 ㅠ
 
     return await model.fit(inputs, labels, {
         batchSize,
