@@ -169,5 +169,5 @@ async function run() {
     await trainModel(model, inputs, labels, 300);
     testModel(model, data, tensorData, 100+200+300);
 }
-// Prepare the model for training.
+
 document.addEventListener('DOMContentLoaded', run);
