@@ -3,16 +3,18 @@
  * and cleaned of missing data.
  */
 async function getData() {
-    const carsDataResponse = await fetch('https://storage.googleapis.com/tfjs-tutorials/carsData.json');
-    const carsData = await carsDataResponse.json();
-    const cleaned = carsData.map(car => ({
-        mpg: car.Miles_per_Gallon,
-        horsepower: car.Horsepower,
-    }))
-        .filter(car => (car.mpg != null && car.horsepower != null));
-
-    return cleaned;
+    let rawData = [];
+    for(let x = 0; x < 25; x++)
+    {
+        let obj = {
+            "x" : x,
+            "y" : 2 * x + 1
+        }
+        rawData.push(obj);
+    }
+    return rawData;
 }
+
 
 function createModel() {
     // Create a sequential model
@@ -41,8 +43,8 @@ function convertToTensor(data) {
         tf.util.shuffle(data);
 
         // Step 2. Convert data to Tensor
-        const inputs = data.map(d => d.horsepower)
-        const labels = data.map(d => d.mpg);
+        const inputs = data.map(d => d.x)
+        const labels = data.map(d => d.y);
 
         const inputTensor = tf.tensor2d(inputs, [inputs.length, 1]);
         const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
@@ -77,7 +79,7 @@ async function trainModel(model, inputs, labels) {
     });
 
     const batchSize = 32;
-    const epochs = 50;
+    const epochs = 100; // 500번 돌리라 했는데...내노트북아 ㅠ
 
     return await model.fit(inputs, labels, {
         batchSize,
@@ -119,15 +121,15 @@ function testModel(model, inputData, normalizationData) {
     });
 
     const originalPoints = inputData.map(d => ({
-        x: d.horsepower, y: d.mpg,
+        x: d.x, y: d.y,
     }));
 
     tfvis.render.scatterplot(
-        {name: 'Model Predictions vs Original Data'},
-        {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
+        {name: '예측데이터 확인'},
+        {values: [originalPoints, predictedPoints], series: ['학습', '예측']},
         {
-            xLabel: 'Horsepower',
-            yLabel: 'MPG',
+            xLabel: 'x',
+            yLabel: 'y',
             height: 300
         }
     );
@@ -137,16 +139,16 @@ async function run() {
     // Load and plot the original input data that we are going to train on.
     const data = await getData();
     const values = data.map(d => ({
-        x: d.horsepower,
-        y: d.mpg,
+        x: d.x,
+        y: d.y,
     }));
 
     tfvis.render.scatterplot(
-        {name: 'Horsepower v MPG'},
+        {name: 'y = 2x+1'},
         {values},
         {
-            xLabel: 'Horsepower',
-            yLabel: 'MPG',
+            xLabel: 'x',
+            yLabel: 'y',
             height: 300
         }
     );
